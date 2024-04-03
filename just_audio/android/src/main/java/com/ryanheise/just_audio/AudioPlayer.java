@@ -887,8 +887,8 @@ public class AudioPlayer implements MethodCallHandler, Player.Listener, Metadata
                 info.put("url", icyInfo.url);
             }
             if (mediaMetadata != null) {
-                info.put("title", mediaMetadata.title.toString());
-                info.put("artist", mediaMetadata.artist.toString());
+                info.put("title", mediaMetadata.title != null ? mediaMetadata.title.toString() : null);
+                info.put("artist", mediaMetadata.artist != null ? mediaMetadata.artist.toString() : null);
             }
             icyData.put("info", info);
         }
