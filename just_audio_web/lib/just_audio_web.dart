@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
+import 'package:just_audio_web/hlsjs_loader.dart';
 import 'package:web/web.dart';
 
 /// The web implementation of [JustAudioPlatform].
@@ -258,9 +259,15 @@ class Html5AudioPlayer extends JustAudioPlayer {
       final Uri uri, final Duration? initialPosition) async {
     transition(ProcessingStateMessage.loading);
     final src = uri.toString();
-    if (src != _audioElement.src) {
+    var isHls = this._audioSourcePlayer is HlsAudioSourcePlayer;;
+    if (isHls || src != _audioElement.src) {
       _durationCompleter = Completer<dynamic>();
-      _audioElement.src = src;
+      if (isHls){
+        await loadHls();
+        attachHlsjs(_audioElement, src);
+      } else {
+        _audioElement.src = src;
+      }
       _audioElement.playbackRate = _speed;
       _audioElement.preload = 'auto';
       _audioElement.load();
