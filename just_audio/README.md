@@ -436,7 +436,7 @@ Please also consider pressing the thumbs up button at the top of [this page](htt
 | read from file                 | ✅      | ✅  | ✅    | ✅  | ✅      | ✅    |
 | read from asset                | ✅      | ✅  | ✅    | ✅  | ✅      | ✅    |
 | read from byte stream          | ✅      | ✅  | ✅    | ✅  | ✅      | ✅    |
-| request headers                | ✅      | ✅  | ✅    |     | ✅      | ✅    |
+| request headers                | ✅      | ✅  | ✅    | *   | ✅      | ✅    |
 | DASH                           | ✅      |     |       |     | ✅      | ✅    |
 | HLS                            | ✅      | ✅  | ✅    |     | ✅      | ✅    |
 | ICY metadata                   | ✅      | ✅  | ✅    |     |         |       |
@@ -455,6 +455,9 @@ Please also consider pressing the thumbs up button at the top of [this page](htt
 | skip silence                   | ✅      |     |       |     |         |       |
 | equalizer                      | ✅      |     |       |     |         | ✅    |
 | volume boost                   | ✅      |     |       |     |         | ✅    |
+
+(*): While request headers cannot be set directly on Web, cookies can be used to send information in the [Cookie header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie). See also `AudioPlayer.setWebCrossOrigin` to allow sending cookies when loading audio files from the same origin or a different origin.
+
 
 ## Experimental features
 

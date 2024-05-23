@@ -1,3 +1,12 @@
+## 0.4.11
+
+* Bump package:web upper bound to <0.6.0
+* Add AudioPlayer.setWebCrossOrigin for CORS on web (@danielwinkler).
+
+## 0.4.10
+
+* Migrate to package:web.
+
 ## 0.4.9
 
 * Fix bug to ensure play exceptions pass through (@idy).

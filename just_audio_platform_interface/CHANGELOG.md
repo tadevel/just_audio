@@ -1,3 +1,7 @@
+## 4.3.0
+
+* Add setWebCrossOrigin for CORS on web (@danielwinkler).
+
 ## 4.2.2
 
 * Add setAllowsExternalPlayback on iOS/macOS.

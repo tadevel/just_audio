@@ -1,6 +1,7 @@
 ## 0.9.38
 
-* Added support for HLS title and artist metadata.
+* Migrate to package:web.
+* Add AudioPlayer.setWebCrossOrigin for CORS on web (@danielwinkler).
 
 ## 0.9.37
 
