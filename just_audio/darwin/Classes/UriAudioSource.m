@@ -32,10 +32,20 @@
 
 - (IndexedPlayerItem *)createPlayerItem:(NSString *)uri {
     IndexedPlayerItem *item;
+    NSMutableDictionary *assetOptions = [[NSMutableDictionary alloc] init];
+    
+    if (_options != (id)[NSNull null]) {
+        NSDictionary *darwinOptions = _options[@"darwinAssetOptions"];
+        if (darwinOptions != (id)[NSNull null]) {
+            assetOptions[AVURLAssetPreferPreciseDurationAndTimingKey] = darwinOptions[@"preferPreciseDurationAndTiming"];
+        }
+    }
+    
     if ([uri hasPrefix:@"file://"]) {
-        item = [[IndexedPlayerItem alloc] initWithURL:[NSURL fileURLWithPath:[[uri stringByRemovingPercentEncoding] substringFromIndex:7]]];
+        NSURL *fileURL = [NSURL fileURLWithPath:[[uri stringByRemovingPercentEncoding] substringFromIndex:7]];
+        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:fileURL options:assetOptions];
+        item = [[IndexedPlayerItem alloc] initWithAsset:asset];
     } else {
-        NSMutableDictionary *assetOptions = [[NSMutableDictionary alloc] init];
         if (_headers) {
             // Use user-agent key if it is the only header and the API is supported.
             if ([_headers count] == 1) {
@@ -58,13 +68,7 @@
                 assetOptions[@"AVURLAssetHTTPHeaderFieldsKey"] = _headers;
             }
         }
-        if (_options != (id)[NSNull null]) {
-            NSDictionary *darwinOptions = _options[@"darwinAssetOptions"];
-            if (darwinOptions != (id)[NSNull null]) {
-                assetOptions[AVURLAssetPreferPreciseDurationAndTimingKey] = darwinOptions[@"preferPreciseDurationAndTiming"];
-            }
-        }
-
+        
         AVURLAsset *asset = [AVURLAsset URLAssetWithURL:[NSURL URLWithString:uri] options:assetOptions];
         item = [[IndexedPlayerItem alloc] initWithAsset:asset];
     }
