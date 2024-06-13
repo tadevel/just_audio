@@ -674,7 +674,7 @@ class AudioPlayer {
   /// This is equivalent to:
   ///
   /// ```
-  /// setAudioSource(AudioSource.uri(Uri.parse(url), headers: headers),
+  /// setAudioSource(AudioSource.uri(Uri.parse(url), headers: headers, tag: tag),
   ///     initialPosition: Duration.zero, preload: true);
   /// ```
   ///
@@ -684,9 +684,12 @@ class AudioPlayer {
     Map<String, String>? headers,
     Duration? initialPosition,
     bool preload = true,
+    dynamic tag,
   }) =>
-      setAudioSource(AudioSource.uri(Uri.parse(url), headers: headers),
-          initialPosition: initialPosition, preload: preload);
+      setAudioSource(
+          AudioSource.uri(Uri.parse(url), headers: headers, tag: tag),
+          initialPosition: initialPosition,
+          preload: preload);
 
   /// Convenience method to set the audio source to a file, preloaded by
   /// default, with an initial position of zero by default.
@@ -694,7 +697,7 @@ class AudioPlayer {
   /// This is equivalent to:
   ///
   /// ```
-  /// setAudioSource(AudioSource.uri(Uri.file(filePath)),
+  /// setAudioSource(AudioSource.uri(Uri.file(filePath), tag: tag),
   ///     initialPosition: Duration.zero, preload: true);
   /// ```
   ///
@@ -703,8 +706,9 @@ class AudioPlayer {
     String filePath, {
     Duration? initialPosition,
     bool preload = true,
+    dynamic tag,
   }) =>
-      setAudioSource(AudioSource.file(filePath),
+      setAudioSource(AudioSource.file(filePath, tag: tag),
           initialPosition: initialPosition, preload: preload);
 
   /// Convenience method to set the audio source to an asset, preloaded by
@@ -713,7 +717,7 @@ class AudioPlayer {
   /// For assets within the same package, this is equivalent to:
   ///
   /// ```
-  /// setAudioSource(AudioSource.uri(Uri.parse('asset:///$assetPath')),
+  /// setAudioSource(AudioSource.uri(Uri.parse('asset:///$assetPath'), tag: tag),
   ///     initialPosition: Duration.zero, preload: true);
   /// ```
   ///
@@ -726,9 +730,10 @@ class AudioPlayer {
     String? package,
     bool preload = true,
     Duration? initialPosition,
+    dynamic tag,
   }) =>
       setAudioSource(
-        AudioSource.asset(assetPath, package: package),
+        AudioSource.asset(assetPath, package: package, tag: tag),
         initialPosition: initialPosition,
         preload: preload,
       );
@@ -884,7 +889,8 @@ class AudioPlayer {
   /// original [AudioSource]. If [end] is null, it will be reset to the end of
   /// the original [AudioSource]. This method cannot be called from the
   /// [ProcessingState.idle] state.
-  Future<Duration?> setClip({Duration? start, Duration? end}) async {
+  Future<Duration?> setClip(
+      {Duration? start, Duration? end, dynamic tag}) async {
     if (_disposed) return null;
     _setPlatformActive(true)?.catchError((dynamic e) async => null);
     final duration = await _load(
@@ -895,6 +901,7 @@ class AudioPlayer {
                 child: _audioSource as UriAudioSource,
                 start: start,
                 end: end,
+                tag: tag,
               ));
     return duration;
   }
@@ -2206,6 +2213,15 @@ abstract class AudioSource {
   ///
   /// If headers are set, just_audio will create a cleartext local HTTP proxy on
   /// your device to forward HTTP requests with headers included.
+  ///
+  /// The [tag] is for associating your app's own data with each audio source,
+  /// e.g. title, cover art, a primary key for your DB. Such data can be
+  /// conveniently retrieved from the tag while rendering the UI.
+  ///
+  /// When using just_audio_background, [tag] must be a MediaItem, a class
+  /// provided by that package. If you wish to have more control over the tag
+  /// for background audio purposes, consider using the plugin audio_service
+  /// instead of just_audio_background.
   static UriAudioSource uri(Uri uri,
       {Map<String, String>? headers, dynamic tag}) {
     bool hasExtension(Uri uri, String extension) =>
@@ -2225,7 +2241,7 @@ abstract class AudioSource {
   /// This is equivalent to:
   ///
   /// ```
-  /// AudioSource.uri(Uri.file(filePath));
+  /// AudioSource.uri(Uri.file(filePath), tag: tag);
   /// ```
   static UriAudioSource file(String filePath, {dynamic tag}) {
     return AudioSource.uri(Uri.file(filePath), tag: tag);
@@ -2236,7 +2252,7 @@ abstract class AudioSource {
   /// For assets within the same package, this is equivalent to:
   ///
   /// ```
-  /// AudioSource.uri(Uri.parse('asset:///$assetPath'));
+  /// AudioSource.uri(Uri.parse('asset:///$assetPath'), tag: tag);
   /// ```
   ///
   /// If the asset is to be loaded from a different package, the [package]

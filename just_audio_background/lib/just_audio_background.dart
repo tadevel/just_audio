@@ -594,6 +594,8 @@ class _PlayerAudioHandler extends BaseAudioHandler
       await (await _player).setPreferredPeakBitRate(request);
 
   void _updateQueue() {
+    assert(sequence.every((source) => source.tag is MediaItem),
+        'Error : When using just_audio_background, you should always use a MediaItem as tag when setting an AudioSource. See AudioSource.uri documentation for more information.');
     queue.add(sequence.map((source) => source.tag as MediaItem).toList());
   }
 
